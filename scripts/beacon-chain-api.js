@@ -1,5 +1,7 @@
 import axios from 'axios';
 import fs from 'fs';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 
 async function getValidatorIndex(apiKey, apiEndpoint, stateId, pubKey) {
 
@@ -50,4 +52,29 @@ async function createOracleBlockHeaderFile(apiKey, apiEndpoint) {
 
 }
 
-export {getValidatorIndex, createOracleBlockHeaderFile};
+async function createStateFile(apiKey, apiEndpoint, slot) {
+
+    const pipelineAsync = promisify(pipeline);
+
+    const url = `${apiEndpoint}/eth/v2/debug/beacon/states/${slot}`;
+    const filePath = `data/holesky_state_${slot}.json`;
+
+    try {
+        const response = await axios.get(url, {
+            responseType:'stream',
+            headers: {
+                'X-API-Key': apiKey
+            }
+        });
+
+        await pipelineAsync(response.data, fs.createWriteStream(filePath));
+        console.log(`File ${filePath} created successfully.`);
+
+    } catch (error) {
+        console.error("Error in createStateFile() function: ", error);
+
+    }
+
+}
+
+export {getValidatorIndex, createOracleBlockHeaderFile, createStateFile};
