@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import {getValidatorIndex} from "./beacon-chain-api.js";
+import {getValidatorIndex, createOracleBlockHeaderFile} from "./beacon-chain-api.js";
 
 
 async function main(beaconStateId, validatorPubKey) {
@@ -15,7 +15,12 @@ async function main(beaconStateId, validatorPubKey) {
         validatorPubKey,
     );
     
-    console.log(validator_index);
+    const lastSlot = await createOracleBlockHeaderFile(
+        API_KEY,
+        API_ENDPOINT,
+    );
+
+    console.log("Last slot: ", lastSlot);
 }
 
 const beaconStateId = process.argv[2];
