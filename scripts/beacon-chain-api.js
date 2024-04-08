@@ -25,25 +25,33 @@ async function createOracleBlockHeaderFile(apiKey, apiEndpoint) {
     const url = `${apiEndpoint}/eth/v1/beacon/headers`;
 
     try {
-        const response = await axios.get(url, {
+        const responseForLastSlot = await axios.get(url, {
             headers: {
                 'X-API-Key': apiKey
             }
         });
 
-        const lastSlot = response.data.data[0].header.message.slot;
+        const lastSlot = responseForLastSlot.data.data[0].header.message.slot;
+        const lastFinalizedSlot = lastSlot - 64;
+
+        const response = await axios.get(`${url}/${lastFinalizedSlot}`, {
+            headers: {
+                'X-API-Key': apiKey
+            }
+        });
+
         const dataAsString = JSON.stringify(response.data, null, 2);
-        const filePath = `data/holesky_block_header_${lastSlot}.json`;
+        const filePath = `data/holesky_block_header_${lastFinalizedSlot}.json`;
 
         fs.writeFileSync(filePath, dataAsString, 'utf8', (err) => {
             if (err) {
-                console.error(`Failed to save block header file at slot ${lastSlot}: `, err);
+                console.error(`Failed to save block header file at slot ${lastFinalizedSlot}: `, err);
             } else {
                 console.log(`File ${filePath} created successfully.`);
             }
         });
 
-        return lastSlot;
+        return lastFinalizedSlot;
 
     } catch (error) {
         console.error("Error in createOracleBlockHeaderFile() function: ", error);

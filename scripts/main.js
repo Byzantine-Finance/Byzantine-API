@@ -15,7 +15,7 @@ async function main(beaconStateId, validatorPubKey) {
         validatorPubKey,
     );
     
-    const lastSlot = await createOracleBlockHeaderFile(
+    const lastFinalizedSlot = await createOracleBlockHeaderFile(
         API_KEY,
         API_ENDPOINT,
     );
@@ -23,7 +23,7 @@ async function main(beaconStateId, validatorPubKey) {
     await createStateFile(
         API_KEY,
         API_ENDPOINT,
-        lastSlot,
+        lastFinalizedSlot,
     );
     
 }
