@@ -3,9 +3,9 @@ import fs from 'fs';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 
-async function getValidatorIndex(apiKey, apiEndpoint, stateId, pubKey) {
+async function getValidatorIndex(apiKey, apiEndpoint, pubKey) {
 
-    const url = `${apiEndpoint}/eth/v1/beacon/states/${stateId}/validators/${pubKey}`;
+    const url = `${apiEndpoint}/eth/v1/beacon/states/finalized/validators/${pubKey}`;
 
     try {
         const response = await axios.get(url, {

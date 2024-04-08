@@ -3,7 +3,7 @@ dotenv.config();
 import {getValidatorIndex, createOracleBlockHeaderFile, createStateFile} from "./beacon-chain-api.js";
 import { getValidatorFieldsProof } from './eigenPod-proof-generation.js';
 
-async function main(beaconStateId, validatorPubKey) {
+async function main(validatorPubKey) {
     
     const API_ENDPOINT = process.env.BASE_API_URL;
     const API_KEY = process.env.API_KEY;
@@ -12,7 +12,6 @@ async function main(beaconStateId, validatorPubKey) {
     const validator_index = await getValidatorIndex(
         API_KEY,
         API_ENDPOINT,
-        beaconStateId,
         validatorPubKey,
     );
     
@@ -35,12 +34,11 @@ async function main(beaconStateId, validatorPubKey) {
     
 }
 
-const beaconStateId = process.argv[2];
-const validatorPubKey = process.argv[3];
+const validatorPubKey = process.argv[2];
 
-if (!beaconStateId || !validatorPubKey) {
-    console.log("Usage: node scripts/main.js <beaconStateId> <validatorPubKey>");
+if (!validatorPubKey) {
+    console.log("Usage: node scripts/main.js <validatorPubKey>");
     process.exit(1);
 }
 
-main(beaconStateId, validatorPubKey);
+main(validatorPubKey);
