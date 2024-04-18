@@ -22,5 +22,4 @@ It will create the 3 following files:
 
 ## Future work
 
-- Protect the API against the empty slots
 - Move in Rust for more resilience 
