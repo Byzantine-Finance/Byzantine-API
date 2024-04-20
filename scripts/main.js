@@ -3,6 +3,8 @@ dotenv.config();
 import {getValidatorIndex, createOracleBlockHeaderFile, createStateFile} from "./beacon-chain-api.js";
 import { getValidatorFieldsProof, getBalanceUpdateProof } from './eigenPod-proof-generation.js';
 
+const HOLESKY_GENESIS_TIMESTAMP = 1695902400;
+
 async function main(proof, validatorPubKey) {
     
     const API_ENDPOINT = process.env.BASE_API_URL;
@@ -24,6 +26,9 @@ async function main(proof, validatorPubKey) {
         API_KEY,
         API_ENDPOINT,
     );
+
+    // Calculate the timestamp related to that specific slot
+    const timestamp  = HOLESKY_GENESIS_TIMESTAMP + (lastFinalizedSlot * 12);
 
     await createStateFile(
         API_KEY,
@@ -47,7 +52,7 @@ async function main(proof, validatorPubKey) {
         console.log('Invalid proof function: choose "ValidatorFieldsProof" or "BalanceUpdateProof"');
     }
 
-    
+    return {lastFinalizedSlot, timestamp};
 }
 
 const proof = process.argv[2];
